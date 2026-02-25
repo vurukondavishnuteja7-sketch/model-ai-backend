@@ -1,39 +1,11 @@
 import express from "express";
-HEAD
 import cors from "cors";
 import dotenv from "dotenv";
 import fetch from "node-fetch";
-
-import dotenv from "dotenv";
-import fetch from "node-fetch";
-import cors from "cors";
-cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
 
 dotenv.config();
 
 const app = express();
-HEAD
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("🚀 Model AI Backend Running");
-});
-
-app.post("/api/chat", async (req, res) => {
-  try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo",
-        messages: [{ role: "user", content: req.body.message }]
-      })
-    });
-
 
 app.use(cors());
 app.use(express.json());
@@ -68,7 +40,6 @@ app.post("/api/chat", async (req, res) => {
         })
       }
     );
-cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
 
     const data = await response.json();
 
@@ -77,15 +48,10 @@ cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
     });
 
   } catch (error) {
-HEAD
-
     console.error(error);
-cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
     res.status(500).json({ reply: "Server error ❌" });
   }
 });
-
-HEAD
 
 /* HUGGINGFACE IMAGE */
 app.post("/api/generate-image", async (req, res) => {
@@ -117,13 +83,8 @@ app.post("/api/generate-image", async (req, res) => {
   }
 });
 
-cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`🔥 Server running on port ${PORT}`);
-HEAD
 });
-
-});
-cd24805abe9dfc7e1de89bfc7c1ab3cb26f9be76
