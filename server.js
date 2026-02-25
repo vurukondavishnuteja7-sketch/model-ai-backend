@@ -1,7 +1,7 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const fetch = require("node-fetch");
-const cors = require("cors");
+import express from "express";
+import dotenv from "dotenv";
+import fetch from "node-fetch";
+import cors from "cors";
 
 dotenv.config();
 
@@ -10,23 +10,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* =========================
-   ROOT TEST
-========================= */
+/* ROOT */
 app.get("/", (req, res) => {
   res.send("🚀 Model AI Backend Running (OpenRouter + HF)");
 });
 
-/* =========================
-   🤖 OPENROUTER CHAT
-========================= */
+/* OPENROUTER CHAT */
 app.post("/api/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
-
-    if (!userMessage) {
-      return res.status(400).json({ reply: "Message required" });
-    }
 
     const response = await fetch(
       "https://openrouter.ai/api/v1/chat/completions",
@@ -51,31 +43,20 @@ app.post("/api/chat", async (req, res) => {
 
     const data = await response.json();
 
-    if (!data.choices) {
-      console.log(data);
-      return res.status(500).json({ reply: "OpenRouter error" });
-    }
-
     res.json({
-      reply: data.choices[0].message.content
+      reply: data.choices?.[0]?.message?.content || "No response"
     });
 
   } catch (error) {
-    console.error("Chat Error:", error);
+    console.error(error);
     res.status(500).json({ reply: "Server error ❌" });
   }
 });
 
-/* =========================
-   🖼 HUGGINGFACE IMAGE
-========================= */
+/* HUGGINGFACE IMAGE */
 app.post("/api/generate-image", async (req, res) => {
   try {
     const prompt = req.body.prompt;
-
-    if (!prompt) {
-      return res.status(400).json({ error: "Prompt required" });
-    }
 
     const response = await fetch(
       "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5",
@@ -85,9 +66,7 @@ app.post("/api/generate-image", async (req, res) => {
           "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          inputs: prompt
-        })
+        body: JSON.stringify({ inputs: prompt })
       }
     );
 
@@ -99,14 +78,11 @@ app.post("/api/generate-image", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Image Error:", error);
+    console.error(error);
     res.status(500).json({ error: "Image generation failed ❌" });
   }
 });
 
-/* =========================
-   START SERVER
-========================= */
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
